@@ -23,7 +23,8 @@
 ## 安装
 
 ```sh
-npm i redux-center
+#因为是基于redux所以要安装redux
+npm i redux redux-center
 ```
 
 ## 使用
