@@ -6,13 +6,11 @@ import co from 'co';
  * 如果不是generator不做处理，co类库自身做了处理。
  * @param {function} generatorFunction generator 函数
  * @param {...any} args generatorFunction的参数
+ * @return {function || undefined} 返回转换后的函数或者undefined（当generator不是函数是，返回undefined）
  */
 export function generatorToAsync(generatorFunction) {
   if (typeof generatorFunction !== 'function') {
-    console.warn('generator must be an function.');
-    return function() {
-      /**noop**/
-    };
+    return;
   }
   return function(...args) {
     return co(generatorFunction(...args));
