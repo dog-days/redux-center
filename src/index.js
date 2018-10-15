@@ -1,23 +1,5 @@
-import { createPut, createGetState } from './util';
+import { call, createPut, createGetState } from './util';
 
-export default function createCenter(centers) {
-  if (!(this instanceof createCenter)) {
-    //如果实例化不是 createCenter，就new一个
-    //这个判断处理可以减少使用new关键字。
-    return new createCenter(centers);
-  }
-  if (centers === undefined) {
-    //默认值
-    centers = async function() {
-      return true;
-    };
-  }
-  if (!Array.isArray(centers)) {
-    //先统一处理成数组
-    centers = [centers];
-  }
-  this.centers = centers;
-}
 /**
  * `中枢`控制方式，所有的dispatch都必须经过`中枢`,符合中枢规则，直接中枢拦截处理，
  * `中枢`再进行派遣决定，然后派遣数据到reducer。
@@ -39,50 +21,86 @@ export default function createCenter(centers) {
  *     case "test":
  *       const data = await call(fetch,'/api/data');
  *       await put({ type: 'test',payload: data });
+ *       //这里不能return true
+ *       //这里不return就一定没问题
  *     break;
  *     default:
+ *       //这里一定要return true
  *       return true;
  *   }
  * }
- * 如果没运行到返回true，就会正常运行原来的dispatch
+ * 如果返回true，就会正常运行原来的dispatch
+ * @function createCenterMiddleware 创建centerMiddleware
+ * @function append 追加单个或者多个center
+ * @function repalceCenters 替换centers，用于热替换使用，需要整体替换。
+ * @return {object} createCenter
  */
-createCenter.prototype.createCenterMiddleware = function() {
-  return ({ dispatch, getState }) => next => async action => {
-    const centers = this.centers;
-    const promises = centers.map(function(center) {
-      //center的元素必须是函数。
-      if (typeof center !== 'function') {
-        throw new TypeError('center 类型必须是函数！');
-      } else {
-        return center(action, {
-          put: createPut(dispatch),
-          select: createGetState(getState),
-          dispatch,
-          getState,
-        });
-      }
-    });
-    let shouldRunNext = await Promise.all(promises).then(shouldRunNexts => {
-      return shouldRunNexts.every(shouldRunNext => {
-        return shouldRunNext;
-      });
-    });
-    // console.log(shouldRunNext);
-    if (shouldRunNext) {
-      //正常执行redux
-      next(action);
-    }
-  };
-};
 
-/**
- * 追加单个或者多个center
- * @param {function || ...function} 追加的center
- */
-createCenter.prototype.append = function(center) {
-  if (Array.isArray(center)) {
-    Array.prototype.push.apply(this.centers, center);
-  } else {
-    this.centers.push(center);
+class Center {
+  constructor(centers) {
+    if (centers === undefined) {
+      //默认值
+      centers = async function() {
+        return true;
+      };
+    }
+    if (!Array.isArray(centers)) {
+      //先统一处理成数组
+      centers = [centers];
+    }
+    this.centers = centers;
   }
-};
+  /**
+   * 创建centerMiddleware
+   */
+  createCenterMiddleware() {
+    return ({ dispatch, getState }) => next => async action => {
+      const centers = this.centers;
+      const promises = centers.map(function(center) {
+        //center的元素必须是函数。
+        if (typeof center !== 'function') {
+          throw new TypeError('center must be a function！');
+        } else {
+          return center(action, {
+            put: createPut(dispatch),
+            select: createGetState(getState),
+            call,
+            dispatch,
+            getState,
+          });
+        }
+      });
+      let shouldRunNext = await Promise.all(promises).then(shouldRunNexts => {
+        return shouldRunNexts.every(shouldRunNext => {
+          return shouldRunNext === true;
+        });
+      });
+      // console.log(shouldRunNext);
+      if (shouldRunNext) {
+        //正常执行redux
+        next(action);
+      }
+    };
+  }
+  /**
+   * 追加单个或者多个center
+   * @param {function || ...function} 追加的center
+   */
+  append(center) {
+    if (Array.isArray(center)) {
+      Array.prototype.push.apply(this.centers, center);
+    } else {
+      this.centers.push(center);
+    }
+  }
+  /**
+   * 替换centers，用于热替换使用，需要整体替换。
+   * @param {...function} 将要替换的centers
+   */
+  replaceCenters(centers) {
+    this.centers = centers;
+  }
+}
+export default function createCenter(centers) {
+  return new Center(centers);
+}
