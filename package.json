@@ -1,6 +1,6 @@
 {
-  "version": "0.0.3",
-  "name": "antd-form-component",
+  "version": "0.0.1",
+  "name": "redux-center",
   "main": "lib/index.js",
   "jsnext:main": "es/index.js",
   "module": "es/index.js",
@@ -50,7 +50,6 @@
     ]
   },
   "react-boilerplate-app-scripts": {
-    "basename": "demo/antd-form-component",
     "appSrcPath": "demo/src",
     "appPublicPath": "demo/public"
   },
