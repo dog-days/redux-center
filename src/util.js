@@ -26,9 +26,13 @@ export function createGetState(getState) {
    * await select()
    * yield select()
    */
-  return function() {
+  return function(selector) {
     const select = new Promise(function(resolve) {
-      resolve(getState());
+      if (selector) {
+        resolve(selector(getState()));
+      } else {
+        resolve(getState());
+      }
     });
     return select;
   };
