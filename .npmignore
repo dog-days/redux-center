@@ -1,13 +1,13 @@
-build.tar.gz
 .idea/
 .vscode/
 node_modules/
 src/
 build/
-dist/
-demo-build/
 /demo/
 .DS_Store
+*.tar.gz
+*.tar
+*.zip
 *.tgz
 *.swp
 *.swo
