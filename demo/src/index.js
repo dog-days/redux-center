@@ -13,15 +13,19 @@ function counter(state = 0, action) {
   }
 }
 const centers = [
-  async function(action, { put, select }) {
-    // console.log(action.type);
+  async function(action, { put, call, select }) {
     switch (action.type) {
       case 'test':
+        //下面append了一个center
+        await put({ type: 'test2' });
         await put({ type: 'INCREMENT' });
         console.log(await select());
         await put({ type: 'DECREMENT' });
-        console.log(await select());
-        await put({ type: 'test2' });
+        console.log('counter', await select(state => state.counter));
+        const data = await call(fetch, '/demo.json').then(resonse => {
+          return resonse.json();
+        });
+        console.log(data);
         break;
       case 'test3':
         console.log('test3');
@@ -38,9 +42,14 @@ const store = createStore(
   combineReducers({ counter }),
   composeEnhancers(applyMiddleware(centerMiddleware))
 );
-
+let clearRenderTimeout;
 store.subscribe(function() {
-  console.log('render message', store.getState());
+  //避免dispath过于频繁。
+  //这样可以避免频繁渲染，集中一次渲染。
+  clearTimeout(clearRenderTimeout);
+  clearRenderTimeout = setTimeout(function() {
+    console.log('render message');
+  }, 200);
 });
 centerInstance.append(
   combineCenters(function*(action, { put, select }) {
