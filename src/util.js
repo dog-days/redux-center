@@ -34,8 +34,11 @@ export function createGetState(getState) {
   };
 }
 /**
- * call的调用发送，为了兼容以前dva、redux-saga-model的用法。
+ * call的调用promise，为了兼容以前dva、redux-saga-model的用法。
  */
 export function call(fn, ...args) {
-  return fn.call(null, ...args);
+  function promise(...args) {
+    return fn(...args);
+  }
+  return promise.call(null, ...args);
 }
