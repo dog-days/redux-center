@@ -17,7 +17,7 @@ export function generatorToAsync(generatorFunction) {
 }
 /**
  * 多个generators函数转成async
- * @param {function || ...funcion} generators
+ * @param {function || ...function} generators
  */
 export default function generatorsToAsync(generators) {
   if (!Array.isArray(generators)) {
