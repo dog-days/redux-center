@@ -1,5 +1,5 @@
 {
-  "version": "0.0.1",
+  "version": "0.0.2",
   "name": "redux-center",
   "main": "lib/index.js",
   "jsnext:main": "es/index.js",
@@ -17,7 +17,8 @@
     "react-boilerplate-app-scripts": "^0.2.11",
     "react-dom": "^15.4.1",
     "react-redux": "^5.0.7",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6"
   },
   "scripts": {
     "build-demo": "npm run build-dll hide-message && react-boilerplate-app-scripts build",
