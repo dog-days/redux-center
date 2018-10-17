@@ -12,17 +12,11 @@ export default function createCenter(centers) {
     centers = [centers];
   }
   /**
-   * `中枢`控制方式，所有的dispatch都必须经过`中枢`,符合中枢规则，直接中枢拦截处理，
-   * `中枢`再进行派遣决定，然后派遣数据到reducer。
-   * `中枢`模式下reducer不建议进行数据处理和适配，
-   * reducer只处理简单数据合并，替换，删除等，不做遍历处理。
-   * `中枢`做数据适配，如遍历处理等，可以简单理解为`中枢`是事务处理中心，复杂的数据处理应该让给它处理。
-   * `中枢`模式可以避免reducer中多次运行数据适配的问题，这个跟react render中不要进行数据适配是一样道理的。
-   * render会多次运行，reducer函数也一，因为有默认state，只要dispatch(action)运行到reducer，
-   * 就一定会运行所有reducer，当然dispatch不能被中间件拦截，如本项目`redux-center`。
-   * `中枢模式`适合用于异步拉去数据。
+   * redux-center是redux异步操作中间件，
+   * redux-center可以简单理解为redux-thunk的升级版，进行了用法规范，
+   * 可以作为redux-thunk、redux-saga、redux-promise等的替代品。
    * @param {async function || ...async function} centers center函数或者center数组函数（async函数），
-   * 用法跟reducer差不多，差别有两点： 函数参数不一样，return只能返回false或者true或者undefined，看下面例子
+   * 用法跟reducer差不多，函数参数不一样，例如：
    * function async centers(action,{ put, call, selector, dispatch, getState }){
    *   //put,call,selector跟redux-saga用法一致
    *   //put是promise版的dispatch,
@@ -32,12 +26,8 @@ export default function createCenter(centers) {
    *     case "test":
    *       const data = await call(fetch,'/api/data');
    *       await put({ type: 'test',payload: data });
-   *       //这里不能return true
-   *       //这里不return就一定没问题
    *     break;
    *     default:
-   *       //这里一定要return true
-   *       return true;
    *   }
    * }
    * 如果返回true，就会正常运行原来的dispatch
