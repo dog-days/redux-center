@@ -46,17 +46,17 @@ export default function createCenter(centers) {
    * @function repalceCenters 替换centers，用于热替换使用，需要整体替换。
    * @return {object} createCenter
    */
-
   class Center {
     /**
      * 创建centerMiddleware
      */
     createCenterMiddleware() {
       return ({ dispatch, getState }) => next => async action => {
+        const result = next(action);
         const promises = centers.map(function(center) {
           //center的元素必须是函数。
           if (typeof center !== 'function') {
-            throw new TypeError('center must be a function！');
+            throw new TypeError('Expected the center to be a function.');
           } else {
             return center(action, {
               put: createPut(dispatch),
@@ -67,16 +67,8 @@ export default function createCenter(centers) {
             });
           }
         });
-        let shouldRunNext = await Promise.all(promises).then(shouldRunNexts => {
-          return shouldRunNexts.every(shouldRunNext => {
-            return shouldRunNext === true;
-          });
-        });
-        // console.log(shouldRunNext);
-        if (shouldRunNext) {
-          //正常执行redux
-          next(action);
-        }
+        await Promise.all(promises);
+        return result;
       };
     }
     /**
@@ -91,10 +83,13 @@ export default function createCenter(centers) {
       }
     }
     /**
-     * 替换centers，用于热替换使用，需要整体替换。
+     * 替换centers，用于热替换或者动态加载，需要整体替换。
      * @param {...function} 将要替换的centers
      */
     replaceCenters(replaceCenters) {
+      if (!Array.isArray(replaceCenters)) {
+        throw new Error('Expected the replaceCenters to be an array.');
+      }
       centers = replaceCenters;
     }
   }
