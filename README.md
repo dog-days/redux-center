@@ -2,15 +2,13 @@
 
 `redux-center`是redux异步操作中间件，`redux-center`可以简单理解为`redux-thunk`的升级版，进行了用法规范，可以作为`redux-thunk`、`redux-saga`、`redux-promise`等的替代品。
 
+`redux-center`多了一层`center`，`center`层将业务代码分离出 `action` 层和 `reducer` 层，减少了代码耦合，对于后期维护和测试非常有益。
+
 `redux-center`目前应用于[redux-mutation](https://github.com/dog-days/redux-center)。
 
-## 概念
+## 兼容性
 
-为了更好的统一，`redux-center`统一这种方式叫`中枢模式`。 
 
-### 定义
-
-`中枢模式`，所有的`dispatch`都必须经过`中枢`，符合规则，直接在`中枢`拦截处理，`中枢`再进行其他`dispatch`，然后派遣数据到`reducer`或者其他`center`。
 
 ## 安装
 
@@ -113,6 +111,38 @@ centerInstance.append(
 store.dispatch({ type: 'test' });
 ```
 
+## 使用注意
+
+`center`的用法跟`reducer`很像，所以`center`的执行不能跟`reucer`冲突，例如下面就是不合理的：
+
+```js
+//伪代码
+//reducer
+function couter(state,action){
+  switch(action.type){
+    case 'same-action-type':
+    break;
+    default:
+     	return state;
+  }
+}
+//centers
+[
+  function (state,action){
+    switch(action.type){
+      case 'same-action-type':
+      break;
+      default:
+        return state;
+    }
+  }
+]
+```
+
+上面两个`case 'same-action-type'`都会执行，因为执行`center`也会执行`reducer`。
+
+`redux-mutation`基于`redux-center`但是没有这个问题，因为`redux-center`定义了新结构，把`switch case`的条件转换成了函数名，然后就可以和`reducers`做对比了。
+
 ## API
 
 ```js
@@ -140,6 +170,34 @@ const centerInstance = createCenter(centers);
 | 参数    | 类型                                  | 说明                                                         |
 | ------- | ------------------------------------- | ------------------------------------------------------------ |
 | centers | async function<br />...async function | `center`函数或者`center`数组函数<br />使用`generator`函数时，需要使用`combineCenters` |
+| options | object                                | 配置参数                                                     |
+
+**options**
+
+| options          | 类型    | 默认值 |
+| ---------------- | ------- | ------ |
+| shouldRunReducer | boolean | true   |
+
+- `optons.shouldRunReducer`
+
+  `action.type`匹配到center条件后是否运行reducer，true时无论是否匹配到center条件都要reducer，false时只有不匹配到center条件才执行reducer，这种情况下center**必须**返回true（不匹配就返回true）,例如
+
+  ```js
+  function(action){
+    switch(action.type){
+      case "test":
+        const data = await call(fetch,'/api/data');
+        await put({ type: 'test',payload: data });
+        break;
+      default:
+        //没匹配到center条件
+        //当options.shouldRunReducer为false时，这里应该return true;
+        return true;
+    }
+  }
+  ```
+
+  shouldRunReducer=false这种模式比较容易因为没返回true，就会导致没执行到reducer，出现bug。而且当cener条件匹配到，然后没返回true的话，`redux-logger`这些日志middleware是无法监控到center的日志的。看情况场景使用。
 
 #### 返回值
 
