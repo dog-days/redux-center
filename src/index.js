@@ -113,11 +113,11 @@ export default function createCenter(centers, options = {}) {
     }
     /**
      * 替换centers，用于热替换或者动态加载，需要整体替换。
-     * @param {...function} 将要替换的centers
+     * @param {async function | ...async function} 将要替换的centers
      */
     replaceCenters(replaceCenters) {
       if (!Array.isArray(replaceCenters)) {
-        throw new Error('Expected the replaceCenters to be an array.');
+        replaceCenters = [replaceCenters];
       }
       centers = replaceCenters;
     }
