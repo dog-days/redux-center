@@ -17,9 +17,13 @@ export function generatorToAsync(generatorFunction) {
 }
 /**
  * 多个generators函数转成async
- * @param {function || ...function} generators
+ * @param {function || array} generators
+ * @return {array | undefined} promise数组，generators未定义返回undefined
  */
 export default function generatorsToAsync(generators) {
+  if (generators === undefined) {
+    return undefined;
+  }
   if (!Array.isArray(generators)) {
     generators = [generators];
   }

@@ -1,7 +1,7 @@
-import { call, createPut, createGetState } from './util';
+import { call, createPut, createGetState, delay } from './util';
 /**
  *
- * @param {async function || ...async function} centers center函数或者center数组函数（async函数），
+ * @param {async function | array} centers center函数或者center数组函数（async函数），
  * @param {object} options.shouldRunReducer 默认值是true
  * action.type匹配到center条件后是否运行reducer，
  * true时无论是否匹配到center条件都要reducer,
@@ -26,8 +26,10 @@ import { call, createPut, createGetState } from './util';
 export default function createCenter(centers, options = {}) {
   if (centers === undefined) {
     //默认值
-    centers = async function() {
-      return true;
+    centers = function() {
+      return new Promise(function(resolve) {
+        resolve(true);
+      });
     };
   }
   if (!Array.isArray(centers)) {
@@ -40,7 +42,7 @@ export default function createCenter(centers, options = {}) {
    * redux-center是redux异步操作中间件，
    * redux-center可以简单理解为redux-thunk的升级版，进行了用法规范，
    * 可以作为redux-thunk、redux-saga、redux-promise等的替代品。
-   * @param {async function || ...async function} centers center函数或者center数组函数（async函数），
+   * @param {async function || array} centers center函数或者center数组函数（async函数），
    * 用法跟reducer差不多，函数参数不一样，例如：
    * function async centers(action,{ put, call, selector, dispatch, getState }){
    *   //put,call,selector跟redux-saga用法一致
@@ -67,7 +69,7 @@ export default function createCenter(centers, options = {}) {
      * 创建centerMiddleware
      */
     createCenterMiddleware() {
-      return ({ dispatch, getState }) => next => async action => {
+      return ({ dispatch, getState }) => next => action => {
         let result;
         if (shouldRunReducer) {
           result = next(action);
@@ -81,28 +83,32 @@ export default function createCenter(centers, options = {}) {
               put: createPut(dispatch),
               select: createGetState(getState),
               call,
+              delay,
               dispatch,
               getState,
             });
           }
         });
-        let shouldRunRunReducerAnterCenters = await Promise.all(promises).then(
-          shouldRunNexts => {
+        const resultPromise = Promise.all(promises)
+          .then(shouldRunNexts => {
             return shouldRunNexts.every(shouldRunNext => {
               return shouldRunNext === true;
             });
-          }
-        );
-        if (shouldRunRunReducerAnterCenters && !shouldRunReducer) {
-          //根据所有center的返回值决定是否运行reducer，使用者自己决定。
-          result = next(action);
-        }
-        return result;
+          })
+          .then(shouldRunRunReducerAnterCenters => {
+            if (shouldRunRunReducerAnterCenters && !shouldRunReducer) {
+              //根据所有center的返回值决定是否运行reducer，使用者自己决定。
+              return next(action);
+            } else {
+              return result;
+            }
+          });
+        return resultPromise;
       };
     }
     /**
      * 追加单个或者多个center
-     * @param {function || ...function} 追加的center
+     * @param {function | array} 追加的center
      */
     append(center) {
       if (Array.isArray(center)) {
@@ -113,7 +119,7 @@ export default function createCenter(centers, options = {}) {
     }
     /**
      * 替换centers，用于热替换或者动态加载，需要整体替换。
-     * @param {async function | ...async function} 将要替换的centers
+     * @param {async function | array} 将要替换的centers
      */
     replaceCenters(replaceCenters) {
       if (!Array.isArray(replaceCenters)) {
