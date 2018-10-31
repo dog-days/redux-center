@@ -5,7 +5,7 @@ import co from 'co';
  * 其实即使转成promise，其中需要用到co generator执行器,
  * 如果不是generator不做处理，co类库自身做了处理。
  * @param {function} generatorFunction generator 函数
- * @return {function || undefined} 返回转换后的函数或者undefined（当generator不是函数是，返回undefined）
+ * @return {function | undefined} 返回转换后的函数或者undefined（当generator不是函数是，返回undefined）
  */
 export function generatorToAsync(generatorFunction) {
   if (typeof generatorFunction !== 'function') {
@@ -17,7 +17,7 @@ export function generatorToAsync(generatorFunction) {
 }
 /**
  * 多个generators函数转成async
- * @param {function || array} generators
+ * @param {function | array} generators
  * @return {array | undefined} promise数组，generators未定义返回undefined
  */
 export default function generatorsToAsync(generators) {
