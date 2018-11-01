@@ -2,7 +2,7 @@
 
 [![build status](https://travis-ci.org/dog-days/redux-center.svg?branch=master)](https://travis-ci.org/dog-days/redux-center) [![codecov](https://codecov.io/gh/dog-days/redux-center/branch/master/graph/badge.svg)](https://codecov.io/gh/dog-days/redux-center) [![npm package](https://badge.fury.io/js/redux-center.svg)](https://www.npmjs.org/package/redux-center) [![NPM downloads](http://img.shields.io/npm/dm/redux-center.svg)](https://npmjs.org/package/redux-center)
 
-`redux-center`是redux异步操作中间件，`redux-center`可以简单理解为`redux-thunk`的升级版，进行了用法规范，可以作为`redux-thunk`、`redux-saga`、`redux-promise`等的替代品。
+`redux-center`是 redux 异步操作中间件，`redux-center`可以简单理解为`redux-thunk`的升级版，进行了用法规范，可以作为`redux-thunk`、`redux-saga`、`redux-promise`等的替代品。
 
 `redux-center`多了一层`center`，`center`层将业务代码分离出 `action` 层和 `reducer` 层，减少了代码耦合，对于后期维护和测试非常有益。
 
@@ -61,7 +61,7 @@ const centers = [
   async function(action, { put, call, select }) {
     switch (action.type) {
       case 'INCREMENT_ASYNC':
-        await put({ type: 'INCREMENT'})
+        await put({ type: 'INCREMENT' });
       default:
     }
   },
@@ -75,7 +75,7 @@ const store = createStore(
 );
 let clearRenderTimeout;
 store.subscribe(function() {
-  console.log("counter:",store.getState())
+  console.log('counter:', store.getState());
 });
 
 // store.dispatch({ type: 'render' });
@@ -91,25 +91,25 @@ store.dispatch({ type: 'INCREMENT_ASYNC' });
 ```js
 //伪代码
 //reducer
-function couter(state,action){
-  switch(action.type){
+function couter(state, action) {
+  switch (action.type) {
     case 'same-action-type':
-    break;
+      break;
     default:
-     	return state;
+      return state;
   }
 }
 //centers
 [
-  function (state,action){
-    switch(action.type){
+  function(state, action) {
+    switch (action.type) {
       case 'same-action-type':
-      break;
+        break;
       default:
         return state;
     }
-  }
-]
+  },
+];
 ```
 
 上面两个`case 'same-action-type'`都会执行，因为执行`center`也会执行`reducer`。
@@ -122,9 +122,9 @@ function couter(state,action){
 
 ## 在浏览器中使用 umd 方式
 
-有两种方式，第一种是使用cdn，第二种就是直接在打包后的的`./dist`文件中获取。
+有两种方式，第一种是使用 cdn，第二种就是直接在打包后的的`./dist`文件中获取。
 
-### cdn方式
+### cdn 方式
 
 - https://unpkg.com/redux-center/dist/redux-center.js
 - https://unpkg.com/redux-center/dist/redux-center.min.js
@@ -141,11 +141,8 @@ npm test
 npm run build
 ```
 
-然后在根目录下的`./dist`文件夹获取相关的js文件。
+然后在根目录下的`./dist`文件夹获取相关的 js 文件。
 
 ## 基于源文件运行例子
 
-请看[这里](./examples/README.md)。
-
-
-
+请看[这里](./examples)。
