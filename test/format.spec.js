@@ -1,4 +1,4 @@
-import createCenter from '../src/index.js';
+import createCenter from '../src/index';
 
 describe('center middleware', () => {
   const doDispatch = () => {};
