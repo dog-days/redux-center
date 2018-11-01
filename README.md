@@ -145,22 +145,7 @@ npm run build
 
 ## 基于源文件运行例子
 
-首先clone并安装。
-
-```sh
-git clone https://github.com/dog-days/redux-center
-cd redux-center
-npm install
-npm test
-```
-
-### counter 例子
-
-```sh
-npm run counter
-```
-
-
+请看[这里](./examples/README.md)。
 
 
 
