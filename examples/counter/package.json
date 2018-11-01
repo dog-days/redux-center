@@ -8,7 +8,7 @@
     "react-dom": "^16.6.0",
     "react-scripts": "2.1.0",
     "redux": "^4.0.1",
-    "redux-center": "0.0.3",
+    "redux-center": "0.0.4",
     "redux-logger": "^3.0.6"
   },
   "scripts": {
