@@ -108,13 +108,13 @@ export default function createCenter(centers, options = {}) {
     }
     /**
      * 追加单个或者多个center
-     * @param {function | array} 追加的center
+     * @param {async function | array} 追加的center
      */
     append(center) {
       if (Array.isArray(center)) {
         Array.prototype.push.apply(centers, center);
       } else {
-        this.centers.push(center);
+        centers.push(center);
       }
     }
     /**
