@@ -31,12 +31,13 @@ describe('util', () => {
     }
     call(tester, 1, 3).should.equal(tester(1, 3));
   });
-  it('should work with `delay`', () => {
+  it('should work with `delay`', done => {
     const oldTime = +new Date();
-    delay(200).then(delayTime => {
+    delay(100).then(delayTime => {
       const newTime = +new Date();
       const spendTime = newTime - oldTime;
       spendTime.should.above(delayTime);
+      done();
     });
   });
 });
