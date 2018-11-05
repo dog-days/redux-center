@@ -25,9 +25,9 @@ describe('default options of center middleware', function() {
     //默认设置只要dispatch就会运行center和reducer
     const prevCounterReducerCallCount = counterReducerSpy.callCount;
     const prevIncrementAsyncCallCount = incrementAsyncSpy.callCount;
+    let clearSetTimeout;
     const unsubscribe = store.subscribe(() => {
       //默认设置，dispatch到center也会触发subscribe的
-      let clearSetTimeout;
       clearTimeout(clearSetTimeout);
       clearSetTimeout = setTimeout(() => {
         //只要dispatch就会运行reducer，center默认是不做拦截，即使没有命中center的运行条件。
