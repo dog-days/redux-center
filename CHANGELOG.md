@@ -1,3 +1,17 @@
+## 0.0.4(2018-11-06)
+
+### Bug Fix
+
+- 解决发布会安装会触发 npm run bootstrap 的问题
+
+### Update
+
+无
+
+### New Function
+
+- 无
+
 ## 0.0.4(2018-10-31)
 
 ### Bug Fix
@@ -7,7 +21,7 @@
 ### Update
 
 - 删除`combine-center.js`
-- async语法使用Promise代替（减少转换的代码量）
+- async 语法使用 Promise 代替（减少转换的代码量）
 
 ### New Function
 
