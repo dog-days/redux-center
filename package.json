@@ -30,7 +30,8 @@
     "dist",
     "lib",
     "es",
-    "src"
+    "src",
+    "postinstall.js"
   ],
   "dependencies": {
     "co": "^4.6.0"
