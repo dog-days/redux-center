@@ -1,5 +1,5 @@
 {
-  "version": "0.0.6",
+  "version": "0.0.7",
   "name": "redux-center",
   "main": "lib/redux-center.js",
   "jsnext:main": "es/redux-center.js",
