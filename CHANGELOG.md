@@ -1,3 +1,17 @@
+## 0.0.8(2010-03-13)
+
+### Bug Fix
+
+- 解决安装 redux-center 时, 找不到 cross-spawn 报错问题
+
+### Update
+
+无
+
+### New Function
+
+- 无
+
 ## 0.0.7(2018-11-06)
 
 ### Bug Fix
