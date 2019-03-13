@@ -34,6 +34,7 @@
     "postinstall.js"
   ],
   "dependencies": {
+    "cross-spawn": "^6.0.5",
     "co": "^4.6.0"
   },
   "devDependencies": {
@@ -49,7 +50,6 @@
     "babel-eslint": "9.0.0",
     "chai": "^4.2.0",
     "cross-env": "^5.1.1",
-    "cross-spawn": "^6.0.5",
     "eslint": "5.6.0",
     "eslint-config-react-app": "^3.0.5",
     "eslint-plugin-flowtype": "^3.1.4",
