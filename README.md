@@ -32,6 +32,8 @@ if (typeof Promise === 'undefined') {
 
 ## 安装
 
+需要而外安装`redux >= 3.1.0`，测试是基于`redux@4.0.1`，最低兼容到`redux@3.1.0`版本，这个跟`applyMiddleware`有关。
+
 ```sh
 #因为是基于redux所以要安装redux
 npm i redux redux-center
