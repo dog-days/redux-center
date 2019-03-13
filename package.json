@@ -1,5 +1,5 @@
 {
-  "version": "0.0.7",
+  "version": "0.0.8",
   "name": "redux-center",
   "main": "lib/redux-center.js",
   "jsnext:main": "es/redux-center.js",
@@ -34,8 +34,8 @@
     "postinstall.js"
   ],
   "dependencies": {
-    "cross-spawn": "^6.0.5",
-    "co": "^4.6.0"
+    "co": "^4.6.0",
+    "cross-spawn": "^6.0.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
